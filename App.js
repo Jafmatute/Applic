@@ -5,7 +5,7 @@ import { Button, Icon } from 'react-native-elements';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Welcome a applic!!</Text>
+      <Text>Welcome a applic!</Text>
       <Button
   title="Solid Button"
   icon={
