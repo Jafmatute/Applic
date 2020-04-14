@@ -1,15 +1,15 @@
 import React  from "react";
 import {View, Text} from "react-native";
 
-function ItemBuy(){
-
-    return(
-        
+export default function ItemBuy({navigation}){
+  
+    return(      
         <View>
             <Text>Productos del cliente</Text>
         </View>
-    )
+    );
+
 
 }
 
-export default ItemBuy();
+//export default ItemBuy();

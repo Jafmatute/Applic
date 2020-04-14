@@ -1,7 +1,7 @@
 import React from "react";
 import {View, Text} from "react-native";
 
-function Message(){
+export default function Message({navigation}){
 
     return(
 
@@ -11,5 +11,3 @@ function Message(){
         </View>
     )
 }
-
-return Message();

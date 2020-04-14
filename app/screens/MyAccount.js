@@ -2,7 +2,7 @@ import React from "react";
 import {View , Text} from "react-native";
 
 
-function MyAccount() {
+export default function MyAccount({navigation}) {
 
     return(
 
@@ -13,4 +13,3 @@ function MyAccount() {
     )
 }
 
-export default MyAccount();
