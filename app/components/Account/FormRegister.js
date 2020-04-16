@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import  {Input, Icon, Button, CheckBox} from 'react-native-elements';
 
 
 export default function FormRegister(){
+
+    const [hidePassword,setHidePassword] = useState(true);
+    const [hideRepeatPass,setHideRepeatPass] = useState(true);
 
     const register = () => {
 
@@ -45,14 +48,15 @@ export default function FormRegister(){
 
             <Input placeholder='Contraseña'
                    password={true}
-                   secureTextEntry={true}
+                   secureTextEntry={hidePassword}
                    containerStyle={stylesFormRegister.inputForm}
                    onChange={()=> console.log('password')}
                    rightIcon={
 
                     <Icon type='material-community'
-                          name='eye-outline'
-                          iconStyle={stylesFormRegister.iconRiht}                  
+                          name={hidePassword ? 'eye-outline' :'eye-off-outline'  }
+                          iconStyle={stylesFormRegister.iconRiht}
+                          onPress={()=>setHidePassword(!hidePassword)}                  
                     />
 
                    } 
@@ -61,14 +65,15 @@ export default function FormRegister(){
 
             <Input placeholder='Repetir contraseña'
                    password={true}
-                   secureTextEntry={true}
+                   secureTextEntry={hideRepeatPass}
                    containerStyle={stylesFormRegister.inputForm}
                    onChange={()=> console.log('Repetir password')}
                    rightIcon={
 
                     <Icon type='material-community'
-                          name='eye-outline'
+                          name={hideRepeatPass ? 'eye-outline' : 'eye-off-outline'}
                           iconStyle={stylesFormRegister.iconRiht}
+                          onPress={()=>setHideRepeatPass(!hideRepeatPass)}
                     
                     />
                    }            
