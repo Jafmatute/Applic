@@ -5,7 +5,7 @@ import loginLogo from '../../../assets/img/login.png';
 
 export default function Login({navigation}) {
 
-    console.log(navigation);
+    //console.log(navigation);
 
     return(
         <ScrollView>
@@ -17,7 +17,8 @@ export default function Login({navigation}) {
            <View style={stylesLogin.viewContainer} >
 
             <Text>Login..</Text>
-            <Text>Create account</Text>
+
+            <CreateAccount props={navigation} />
 
            </View>
 
@@ -35,6 +36,28 @@ export default function Login({navigation}) {
 
 }
 
+function CreateAccount(propsRegister) {
+
+    const {props} = propsRegister;
+
+    return(
+
+        <Text style={stylesLogin.textRegister} >
+
+            ¿Aún no tienes una cuenta?{' '}
+
+            <Text style={stylesLogin.btnRegister}
+                  onPress={()=> props.navigate('Register')}
+            >
+
+             Regístrate
+
+            </Text>
+
+        </Text>
+    )
+}
+
 const stylesLogin = StyleSheet.create({
 
     logo:{
@@ -45,6 +68,16 @@ const stylesLogin = StyleSheet.create({
     viewContainer:{
        marginRight:40,
        marginLeft:40 
+    },
+    textRegister:{
+        marginTop:15,
+        marginRight:10,
+        marginLeft:10
+    },
+    btnRegister:{
+        color:'#2089dc',
+        fontWeight:'bold'
+
     },
     dividir:{
         backgroundColor:'#00a680',
