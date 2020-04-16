@@ -4,7 +4,7 @@ import { Button, Icon } from 'react-native-elements';
 import logo from '../../../assets/img/logo.jpg';
 
 export default function UserGuest(propsNavigation)  {
-    console.log(propsNavigation);
+    //console.log(propsNavigation);
     const {props} = propsNavigation;
     return(
       
