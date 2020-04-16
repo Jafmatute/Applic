@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import ItemBuyScreenStacks from './stack/ItemBuyStackNavigation';
-import MyAccountNavigationStack from './stack//MyAccountNavigationStack';
+import MyAccountScreenStacks from './stack//MyAccountNavigationStack';
 import MessageScreenStacks from './stack/MessageStackNavigation';
 import SearchScreenStacks from './stack/SearchStackNavigation';
 
@@ -40,7 +40,7 @@ const  NavigationStacks = () => (
         }} />
      
  
-        <Tab.Screen name="Account" component={MyAccountNavigationStack}
+        <Tab.Screen name="Account" component={MyAccountScreenStacks}
         options = {{
           tabBarIcon: ({tintColor}) => (
             <Icon
@@ -50,9 +50,9 @@ const  NavigationStacks = () => (
             color={tintColor}
             />
           )
-        }}
-        
+        }}     
         />
+
 
         <Tab.Screen name="Message" component={MessageScreenStacks} 
         options = {{

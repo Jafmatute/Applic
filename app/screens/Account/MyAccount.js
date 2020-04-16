@@ -14,6 +14,7 @@ export default function MyAccount({navigation}) {
 
             !user ? setLogin(false) : setLogin(true);
             console.log(user);
+            //console.log(navigation);
         });
 
     }, []);
@@ -23,7 +24,7 @@ export default function MyAccount({navigation}) {
     }
    
 
-    return login ? <UserLogged /> : <UserGuest /> ;
+    return login ? <UserLogged /> : <UserGuest props={navigation} /> ;
 
 
 }

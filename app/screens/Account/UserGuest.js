@@ -3,8 +3,9 @@ import { StyleSheet,View, Text, ScrollView, Image} from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import logo from '../../../assets/img/logo.jpg';
 
-export default function UserGuest() {
-
+export default function UserGuest(propsNavigation)  {
+    console.log(propsNavigation);
+    const {props} = propsNavigation;
     return(
       
      <ScrollView style={stylesGuest.viewBody} centerContent={true} >
@@ -20,15 +21,15 @@ export default function UserGuest() {
         </Text>
 
         <Text style={stylesGuest.descrption} >
-        ¿Como determinarias la mejor eleccion de compra? Busca y visualiza los mejores precios de tus productos
-        de una forma sencilla, elige la mejor opcion.
+        ¿Como determinarias la mejor elección de compra? Busca y visualiza los mejores precios de tus productos
+        de una forma sencilla, elige la mejor opción.
         </Text>
 
         <View style={stylesGuest.viewBtn}>
 
         <Button buttonStyle={stylesGuest.button}
                 containerStyle={stylesGuest.containerBtn}              
-                onPress={console.log('perfil')}
+                onPress={() => props.navigate('Login')}
                 icon={
                     <Icon
                     type="material-community"
@@ -47,6 +48,9 @@ export default function UserGuest() {
         
     )
 }
+
+
+
 
 const stylesGuest = StyleSheet.create({
 
