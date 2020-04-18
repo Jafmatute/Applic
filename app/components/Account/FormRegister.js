@@ -8,10 +8,29 @@ export default function FormRegister(){
     const [hidePassword,setHidePassword] = useState(true);
     const [hideRepeatPass,setHideRepeatPass] = useState(true);
 
-    const register = () => {
 
-        console.log('usuario registrado');
-    }
+    const [dataForm, setDataForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirPass:""
+  });
+
+  const hanldeChange = (e,text) => {
+    //console.log(e);
+    setDataForm({
+      ...dataForm,
+      [text]: e.nativeEvent.text
+    });
+  };
+
+     const register = (e) => {
+      e.preventDefault();
+      console.log("name:" + dataForm.name);
+      console.log("correo:" + dataForm.email);
+      console.log("password:" + dataForm.password);
+      console.log("password:" + dataForm.confirPass);
+    };
 
     return(
 
@@ -20,7 +39,7 @@ export default function FormRegister(){
 
             <Input placeholder='Ingrese su nombre completo'
                    containerStyle={stylesFormRegister.inputForm}
-                   onChange={()=> console.log('name')}
+                   onChange={text => hanldeChange(text, 'name')}
                    rightIcon={
 
                     <Icon type='material-community'
@@ -35,7 +54,7 @@ export default function FormRegister(){
 
             <Input placeholder='Correo Electronico'
                    containerStyle={stylesFormRegister.inputForm}
-                   onChange={()=> console.log('email')}
+                   onChange={text => hanldeChange(text, 'email')}
                    rightIcon={
 
                     <Icon type='material-community'
@@ -50,7 +69,7 @@ export default function FormRegister(){
                    password={true}
                    secureTextEntry={hidePassword}
                    containerStyle={stylesFormRegister.inputForm}
-                   onChange={()=> console.log('password')}
+                   onChange={text => hanldeChange(text, 'password')}
                    rightIcon={
 
                     <Icon type='material-community'
@@ -67,7 +86,7 @@ export default function FormRegister(){
                    password={true}
                    secureTextEntry={hideRepeatPass}
                    containerStyle={stylesFormRegister.inputForm}
-                   onChange={()=> console.log('Repetir password')}
+                   onChange={text => hanldeChange(text, 'confirPass')}
                    rightIcon={
 
                     <Icon type='material-community'
