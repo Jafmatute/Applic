@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import  {Input, Icon, Button, CheckBox} from 'react-native-elements';
+import  {validateEmail} from '../../utils/Validations';
 
 
 export default function FormRegister(){
@@ -10,26 +11,54 @@ export default function FormRegister(){
 
 
     const [dataForm, setDataForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirPass:""
-  });
+      name: "",
+      email: "",
+      password: "",
+      confirPass:""
+    });
 
-  const hanldeChange = (e,text) => {
-    //console.log(e);
-    setDataForm({
+    const hanldeChange = (e,text) => {
+      //console.log(e);
+      setDataForm({
       ...dataForm,
       [text]: e.nativeEvent.text
-    });
-  };
+      });
+    };
 
      const register = (e) => {
       e.preventDefault();
-      console.log("name:" + dataForm.name);
-      console.log("correo:" + dataForm.email);
-      console.log("password:" + dataForm.password);
-      console.log("password:" + dataForm.confirPass);
+
+      const {name,email,password,confirPass} = dataForm;
+
+      if(!email || !password || !name || !confirPass) {
+
+        console.log('todos los campos son obligatorios');
+
+      }else{
+
+        if(!validateEmail(email)) {
+
+          console.log('email invalido');
+
+        }else{
+
+          if(password !== confirPass) {
+
+            console.log('las conrtraseñas no son iguales');
+          }else{
+
+            console.log('registro correcto...');
+          }
+
+        }
+
+      }
+
+      /*const emailValidation = validateEmail(dataForm.email);
+      console.log(emailValidation);*/
+
+
+
     };
 
     return(
