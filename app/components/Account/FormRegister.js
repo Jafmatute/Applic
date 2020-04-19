@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import  {Input, Icon, Button, CheckBox} from 'react-native-elements';
 import  {validateEmail} from '../../utils/Validations';
+import * as firebase from 'firebase';
 
 
 export default function FormRegister(){
@@ -25,8 +26,7 @@ export default function FormRegister(){
       });
     };
 
-     const register = (e) => {
-      e.preventDefault();
+     const register = async () => {
 
       const {name,email,password,confirPass} = dataForm;
 
@@ -47,17 +47,28 @@ export default function FormRegister(){
             console.log('las conrtraseñas no son iguales');
           }else{
 
-            console.log('registro correcto...');
+            await firebase
+            .auth()
+            .createUserWithEmailAndPassword(email,password)
+            .then(()=> {
+
+                console.log('usuario creado con éxito');
+
+              }).catch((e)=>{
+
+                console.log('error al crear el usuario');
+                let errorCode = e.code;
+                let errorMsj= e.message;
+
+                console.log(errorCode);
+                console.log(errorMsj);
+
+              });
           }
 
         }
 
       }
-
-      /*const emailValidation = validateEmail(dataForm.email);
-      console.log(emailValidation);*/
-
-
 
     };
 
