@@ -4,6 +4,7 @@ import { Divider } from "react-native-elements";
 import loginLogo from "../../../assets/img/login.png";
 import FormLogin from "../../components/Account/FormLogin";
 import DropdownAlert from "react-native-dropdownalert";
+import LoginFacebook from "../../components/Account/LoginFacebook";
 
 export default function Login({ navigation }) {
   //console.log(navigation);
@@ -20,7 +21,7 @@ export default function Login({ navigation }) {
       <Divider style={stylesLogin.dividir} />
 
       <View style={stylesLogin.viewContainer}>
-        <Text>Login Facebook.</Text>
+        <LoginFacebook />
       </View>
 
       <DropdownAlert
