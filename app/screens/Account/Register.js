@@ -16,7 +16,7 @@ export default function Register({ navigation }) {
       </Text>
 
       <View style={stylesRegister.viewForm}>
-        <FormRegister dropDownAlert={dropDownAlert} />
+        <FormRegister dropDownAlert={dropDownAlert} navigation={navigation} />
       </View>
 
       <DropdownAlert

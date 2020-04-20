@@ -3,12 +3,17 @@ import { StyleSheet, View, Text } from "react-native";
 import { Input, Icon, Button, CheckBox } from "react-native-elements";
 import { validateEmail } from "../../utils/Validations";
 import * as firebase from "firebase";
+import Loading from "../Loading";
 
 export default function FormRegister(props) {
-  const { dropDownAlert } = props;
-  //console.log(dropDownAlert);
+  //console.log(props);
+  const { dropDownAlert, navigation } = props;
+
+  //console.log(navigation);
+
   const [hidePassword, setHidePassword] = useState(true);
   const [hideRepeatPass, setHideRepeatPass] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [dataForm, setDataForm] = useState({
     name: "",
@@ -26,6 +31,7 @@ export default function FormRegister(props) {
   };
 
   const register = async () => {
+    setIsLoading(true);
     const { name, email, password, confirPass } = dataForm;
 
     if (!email || !password || !name || !confirPass) {
@@ -65,6 +71,8 @@ export default function FormRegister(props) {
                   "Registro",
                   "Usuario creado con éxito"
                 );
+
+                navigation.navigate("MyAccount");
               })
               .catch((e) => {
                 //let errorCode = e.code;
@@ -93,6 +101,7 @@ export default function FormRegister(props) {
         }
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -167,6 +176,8 @@ export default function FormRegister(props) {
         buttonStyle={stylesFormRegister.btnRegister}
         onPress={register}
       />
+
+      <Loading text="Creando cuenta" isVisible={isLoading} />
     </View>
   );
 }
