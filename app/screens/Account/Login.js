@@ -12,7 +12,7 @@ export default function Login({ navigation }) {
     <ScrollView>
       <Image source={loginLogo} style={stylesLogin.logo} resizeMode="contain" />
       <View style={stylesLogin.viewContainer}>
-        <FormLogin dropDownAlert={dropDownAlert} />
+        <FormLogin dropDownAlert={dropDownAlert} navigation={navigation} />
 
         <CreateAccount props={navigation} />
       </View>

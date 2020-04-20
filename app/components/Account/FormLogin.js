@@ -3,16 +3,17 @@ import { StyleSheet, View } from "react-native";
 import { Input, Icon, Button } from "react-native-elements";
 import { validateEmail } from "../../utils/Validations";
 import Loading from "../Loading";
+import * as firebase from "firebase";
 
 export default function FormLogin(props) {
   //console.log(props);
-  const { dropDownAlert } = props;
+  const { dropDownAlert, navigation } = props;
   const [hidePassword, setHidePassword] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const login = () => {
+  const login = async () => {
     setIsLoading(true);
     if (!email || !password) {
       dropDownAlert.current.alertWithType(
@@ -28,7 +29,24 @@ export default function FormLogin(props) {
           "Correo electrónico no válido"
         );
       } else {
-        // TODO: Lógica para iniciar sesión con firebase
+        await firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password)
+          .then(() => {
+            dropDownAlert.current.alertWithType(
+              "error",
+              "Inicio de sesión",
+              "Bienvenido"
+            );
+            navigation.navigate("MyAccount");
+          })
+          .catch((e) => {
+            dropDownAlert.current.alertWithType(
+              "error",
+              "Inicio de sesión",
+              "Correo electrónico / contraseña incorrectas"
+            );
+          });
       }
     }
 
