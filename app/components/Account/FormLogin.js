@@ -1,15 +1,38 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Input, Icon, Button } from "react-native-elements";
+import { validateEmail } from "../../utils/Validations";
+import Loading from "../Loading";
 
-export default function FormLogin() {
+export default function FormLogin(props) {
+  //console.log(props);
+  const { dropDownAlert } = props;
   const [hidePassword, setHidePassword] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const login = () => {
-    console.log("email" + email);
-    console.log("password" + password);
+    setIsLoading(true);
+    if (!email || !password) {
+      dropDownAlert.current.alertWithType(
+        "error",
+        "Inicio de sesión",
+        "Los campos son obligatorios"
+      );
+    } else {
+      if (!validateEmail(email)) {
+        dropDownAlert.current.alertWithType(
+          "error",
+          "Inicio de sesión",
+          "Correo electrónico no válido"
+        );
+      } else {
+        // TODO: Lógica para iniciar sesión con firebase
+      }
+    }
+
+    setIsLoading(false);
   };
   return (
     <View style={stylesFormLogin.formContainer}>
@@ -46,6 +69,8 @@ export default function FormLogin() {
         buttonStyle={stylesFormLogin.btnLogin}
         onPress={login}
       />
+
+      <Loading text="Iniciando Sesión" isVisible={isLoading} />
     </View>
   );
 }

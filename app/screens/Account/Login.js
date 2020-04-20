@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useRef } from "react";
 import { StyleSheet, View, ScrollView, Text, Image } from "react-native";
 import { Divider } from "react-native-elements";
 import loginLogo from "../../../assets/img/login.png";
 import FormLogin from "../../components/Account/FormLogin";
+import DropdownAlert from "react-native-dropdownalert";
 
 export default function Login({ navigation }) {
   //console.log(navigation);
-
+  const dropDownAlert = useRef();
   return (
     <ScrollView>
       <Image source={loginLogo} style={stylesLogin.logo} resizeMode="contain" />
       <View style={stylesLogin.viewContainer}>
-        <FormLogin />
+        <FormLogin dropDownAlert={dropDownAlert} />
 
         <CreateAccount props={navigation} />
       </View>
@@ -21,6 +22,11 @@ export default function Login({ navigation }) {
       <View style={stylesLogin.viewContainer}>
         <Text>Login Facebook.</Text>
       </View>
+
+      <DropdownAlert
+        ref={dropDownAlert}
+        style={{ width: "100%", height: "100%" }}
+      />
     </ScrollView>
   );
 }
