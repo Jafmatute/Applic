@@ -21,7 +21,7 @@ export default function Login({ navigation }) {
       <Divider style={stylesLogin.dividir} />
 
       <View style={stylesLogin.viewContainer}>
-        <LoginFacebook />
+        <LoginFacebook dropDownAlert={dropDownAlert} navigation={navigation} />
       </View>
 
       <DropdownAlert

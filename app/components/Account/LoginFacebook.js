@@ -4,7 +4,10 @@ import * as firebase from "firebase";
 import * as Facebook from "expo-facebook";
 import { FacebookApi } from "../../utils/Social";
 import Loading from "../Loading";
-export default function LoginFacebook() {
+export default function LoginFacebook(props) {
+  const { dropDownAlert, navigation } = props;
+  const [isLoading, setIsLoading] = useState(false);
+
   const loginFacebook = async () => {
     await Facebook.initializeAsync();
 
@@ -17,31 +20,50 @@ export default function LoginFacebook() {
     );
 
     if (type === "success") {
+      setIsLoading(true);
       const credentials = firebase.auth.FacebookAuthProvider.credential(token);
       await firebase
         .auth()
         .signInWithCredential(credentials)
         .then(() => {
-          console.log("login correcto");
+          navigation.navigate("MyAccount");
         })
         .catch((e) => {
           let errorMsj = e.message;
-          console.log(errorMsj);
-          console.log("error accediendo con Facebook, intentelo más tarde");
+          //console.log(errorMsj);
+          dropDownAlert.current.alertWithType(
+            "error",
+            "Inicio de sesión Facebook",
+            "error accediendo con Facebook, intentelo más tarde"
+          );
         });
     } else if (type === "cancel") {
-      console.log("Inicio de sesión con Facebook cancelado");
+      dropDownAlert.current.alertWithType(
+        "error",
+        "Cancelado",
+        "Inicio de sesión con Facebook cancelado"
+      );
     } else {
-      console.log("error desconocido, intentelo más tarde");
+      dropDownAlert.current.alertWithType(
+        "error",
+        "Desconocido",
+        "error desconocido, intentelo más tarde"
+      );
     }
+
+    setIsLoading(false);
   };
 
   return (
-    <SocialIcon
-      title="Iniciar sesión con Facebook"
-      button
-      type="facebook"
-      onPress={loginFacebook}
-    />
+    <>
+      <SocialIcon
+        title="Iniciar sesión con Facebook"
+        button
+        type="facebook"
+        onPress={loginFacebook}
+      />
+
+      <Loading isVisible={isLoading} text="Iniciando sesión" />
+    </>
   );
 }
