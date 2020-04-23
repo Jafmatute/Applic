@@ -9,7 +9,7 @@ export default function LoginFacebook(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const loginFacebook = async () => {
-    await Facebook.initializeAsync();
+    await Facebook.initializeAsync(FacebookApi.application_id);
 
     const {
       type,
