@@ -32,13 +32,18 @@ export default function FormLogin(props) {
         await firebase
           .auth()
           .signInWithEmailAndPassword(email, password)
-          .then(() => {
-            dropDownAlert.current.alertWithType(
-              "error",
-              "Inicio de sesión",
-              "Bienvenido"
-            );
-            navigation.navigate("MyAccount");
+          .then((e) => {
+            if (e.user.emailVerified) {
+              navigation.navigate("MyAccount");
+            } else {
+              dropDownAlert.current.alertWithType(
+                "info",
+                "Inicio de sesión",
+                "Su cuenta no ha sido autenticada!"
+              );
+            }
+
+            console.log(e);
           })
           .catch((e) => {
             dropDownAlert.current.alertWithType(

@@ -26,7 +26,7 @@ export default function Login({ navigation }) {
 
       <DropdownAlert
         ref={dropDownAlert}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "50%" }}
       />
     </ScrollView>
   );

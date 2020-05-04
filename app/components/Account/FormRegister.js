@@ -30,6 +30,25 @@ export default function FormRegister(props) {
     });
   };
 
+  const verificar = async () => {
+    const emailVerified_ = await firebase.auth().currentUser;
+
+    emailVerified_
+      .sendEmailVerification()
+      .then(() => {
+        //email send
+
+        dropDownAlert.current.alertWithType(
+          "success",
+          "Registro",
+          "Se envío un correo para su confirmación"
+        );
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   const register = async () => {
     setIsLoading(true);
     const { name, email, password, confirPass } = dataForm;
@@ -66,12 +85,7 @@ export default function FormRegister(props) {
               .auth()
               .createUserWithEmailAndPassword(email, password)
               .then(() => {
-                dropDownAlert.current.alertWithType(
-                  "success",
-                  "Registro",
-                  "Usuario creado con éxito"
-                );
-
+                verificar();
                 navigation.navigate("MyAccount");
               })
               .catch((e) => {

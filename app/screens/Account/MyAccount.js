@@ -1,31 +1,37 @@
-import React, {useState, useEffect} from "react";
-import * as firebase from 'firebase';
+import React, { useState, useEffect } from "react";
+import * as firebase from "firebase";
 import Loading from "../../components/Loading";
-import  UserGuest  from "./UserGuest";
+import UserGuest from "./UserGuest";
 import UserLogged from "./UserLogged";
+import { set } from "react-native-reanimated";
 
-export default function MyAccount({navigation}) {
+export default function MyAccount({ navigation }) {
+  const [login, setLogin] = useState(null);
 
-    const [login, setLogin] = useState(null);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      //!user ? setLogin(false) : setLogin(true);
+      if (!user) {
+        setLogin(false);
+      } else {
+        if (user.providerData[0].providerId === "facebook.com") {
+          setLogin(true);
+        } else {
+          if (user.emailVerified) {
+            setLogin(true);
+          } else {
+            setLogin(false);
+          }
+        }
+      }
 
-    useEffect( () => {
+      //console.log(navigation);
+    });
+  }, []);
 
-        firebase.auth().onAuthStateChanged( user => {
+  if (login === null) {
+    return <Loading isVisible={true} text="Cargando.." />;
+  }
 
-            !user ? setLogin(false) : setLogin(true);
-            console.log(user);
-            //console.log(navigation);
-        });
-
-    }, []);
-
-    if(login===null){
-        return( <Loading isVisible={true} text="Cargando.." /> )
-    }
-   
-
-    return login ? <UserLogged /> : <UserGuest props={navigation} /> ;
-
-
+  return login ? <UserLogged /> : <UserGuest props={navigation} />;
 }
-
