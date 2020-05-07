@@ -11,7 +11,7 @@ export default function UserLogged() {
     (async () => {
       const user = await firebase.auth().currentUser;
       //console.log("desde usuario logeado", user);
-      setInfoUser[user.providerData[0]];
+      setInfoUser(user.providerData[0]);
     })();
   }, []);
 
