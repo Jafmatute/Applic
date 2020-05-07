@@ -15,7 +15,7 @@ const ItemBuyScreenStacks = () => (
     <Stack.Screen
       name="Buys"
       component={AddBuysScreen}
-      options={{ title: "agregar compra" }}
+      options={{ title: "Compra" }}
     />
   </Stack.Navigator>
 );
