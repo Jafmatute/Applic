@@ -6,7 +6,7 @@ export default function InfoUserAccount(props) {
   const {
     infoUser: { uid, displayName, email, photoURL },
   } = props;
-  //const { uid, displayName, email, photoURL } = props;
+
   //console.log("component user info", infoUser);
 
   const changeAvatar = () => {
