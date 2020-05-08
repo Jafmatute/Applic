@@ -10,6 +10,9 @@ import {
 } from "react-native-elements";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
+import imgbuy from "../../../assets/img/screen-buys.png";
+
+const WidthScreen = Dimensions.get("window").width;
 
 export default function FormAddBuys(props) {
   //console.log("add form", props);
@@ -18,12 +21,30 @@ export default function FormAddBuys(props) {
   //console.log("navigation form..", navigation);
   return (
     <ScrollView>
+      <ImageBuys imageBuys={imageSelected[0]} />
       <UploadImagen
         imageSelected={imageSelected}
         setImageSelected={setImageSelected}
         dropDownAlert={dropDownAlert}
       />
     </ScrollView>
+  );
+}
+
+function ImageBuys(props) {
+  const { imageBuys } = props;
+
+  return (
+    <View style={stylesAddBuys.viewPhoto}>
+      {imageBuys ? (
+        <Image
+          source={{ uri: imageBuys }}
+          style={{ width: WidthScreen, height: 200 }}
+        />
+      ) : (
+        <Image source={imgbuy} style={{ width: WidthScreen, height: 200 }} />
+      )}
+    </View>
   );
 }
 
@@ -123,6 +144,11 @@ function UploadImagen(props) {
 }
 
 const stylesAddBuys = StyleSheet.create({
+  viewPhoto: {
+    alignItems: "center",
+    height: 200,
+    marginBottom: 20,
+  },
   viewImage: {
     flexDirection: "row",
     marginLeft: 20,
