@@ -57,23 +57,28 @@ function UploadImagen(props) {
     }
   };
 
-  console.log(imageSelected);
+  //console.log(imageSelected);
 
   return (
     <View style={stylesAddBuys.viewImage}>
-      <Icon
-        type="material-community"
-        name="camera"
-        color="#7a7a7a"
-        containerStyle={stylesAddBuys.containerIcon}
-        onPress={imageSelect}
-      />
+      {imageSelected.length < 5 && (
+        <Icon
+          type="material-community"
+          name="camera"
+          color="#7a7a7a"
+          containerStyle={stylesAddBuys.containerIcon}
+          onPress={imageSelect}
+        />
+      )}
 
-      <Avatar
-        onPress={() => console.log("eliminar imagen")}
-        style={stylesAddBuys.miniatureStyle}
-        //source={{uri?}}
-      />
+      {imageSelected.map((imageBuys, index) => (
+        <Avatar
+          key={index}
+          onPress={() => console.log("eliminar imagen")}
+          style={stylesAddBuys.miniatureStyle}
+          source={{ uri: imageBuys }}
+        />
+      ))}
     </View>
   );
 }
@@ -94,8 +99,8 @@ const stylesAddBuys = StyleSheet.create({
     backgroundColor: "#e3e3e3",
   },
   miniatureStyle: {
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     marginRight: 10,
   },
 });
