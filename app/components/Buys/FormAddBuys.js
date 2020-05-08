@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ScrollView, Alert, Dimensions } from "react-native";
-import { Icon, Avatar, Image, Input, Button } from "react-native-elements";
+import {
+  Icon,
+  Avatar,
+  Badge,
+  Image,
+  Input,
+  Button,
+} from "react-native-elements";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 
@@ -57,6 +64,29 @@ function UploadImagen(props) {
     }
   };
 
+  const removeImage = (image) => {
+    //console.log(image);
+    const arrayImage = imageSelected;
+    Alert.alert(
+      "Eliminar imagen",
+      "¿Está seguro de que quiere eliminar la imagen?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar",
+          onPress: () =>
+            setImageSelected(
+              arrayImage.filter((imageURL) => imageURL != image)
+            ),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   //console.log(imageSelected);
 
   return (
@@ -72,12 +102,21 @@ function UploadImagen(props) {
       )}
 
       {imageSelected.map((imageBuys, index) => (
-        <Avatar
-          key={index}
-          onPress={() => console.log("eliminar imagen")}
-          style={stylesAddBuys.miniatureStyle}
-          source={{ uri: imageBuys }}
-        />
+        <View>
+          <Avatar
+            //key={index}
+            //onPress={() => removeImage(imageBuys)}
+            style={stylesAddBuys.miniatureStyle}
+            source={{ uri: imageBuys }}
+          />
+          <Badge
+            key={index}
+            status="error"
+            containerStyle={stylesAddBuys.badgeAvatar}
+            onPress={() => removeImage(imageBuys)}
+            value="X"
+          />
+        </View>
       ))}
     </View>
   );
@@ -102,5 +141,10 @@ const stylesAddBuys = StyleSheet.create({
     width: 60,
     height: 60,
     marginRight: 10,
+  },
+  badgeAvatar: {
+    position: "absolute",
+    top: -3,
+    right: 32,
   },
 });
