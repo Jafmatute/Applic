@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ScrollView, Alert, Dimensions } from "react-native";
 import { Icon, Avatar, Image, Input, Button } from "react-native-elements";
+import * as Permissions from "expo-permissions";
+import * as ImagePicker from "expo-image-picker";
 
 export default function FormAddBuys(props) {
   //console.log("add form", props);
@@ -12,13 +14,50 @@ export default function FormAddBuys(props) {
       <UploadImagen
         imageSelected={imageSelected}
         setImageSelected={setImageSelected}
+        dropDownAlert={dropDownAlert}
       />
     </ScrollView>
   );
 }
 
 function UploadImagen(props) {
-  const { imageSelected, setImageSelected } = props;
+  const { imageSelected, setImageSelected, dropDownAlert } = props;
+
+  const imageSelect = async () => {
+    const resultPermissions = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
+
+    //console.log(resultPermissions);
+
+    const resultPermissionCamera =
+      resultPermissions.permissions.cameraRoll.status;
+
+    if (resultPermissionCamera === "denied") {
+      dropDownAlert.current.alertWithType(
+        "error",
+        "Galeria",
+        "Permisos denegados, para activarlos en el apartado de ajsutes los puedes activar nuevamente"
+      );
+    } else {
+      //console.log("correcto");
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+      if (result.cancelled) {
+        dropDownAlert.current.alertWithType(
+          "info",
+          "Galeria",
+          "No seleccionó ninguna imagen de la galeria"
+        );
+      } else {
+        setImageSelected([...imageSelected, result.uri]);
+      }
+    }
+  };
+
+  console.log(imageSelected);
 
   return (
     <View style={stylesAddBuys.viewImage}>
@@ -27,7 +66,7 @@ function UploadImagen(props) {
         name="camera"
         color="#7a7a7a"
         containerStyle={stylesAddBuys.containerIcon}
-        onPress={() => console.log("subiendo imagen")}
+        onPress={imageSelect}
       />
 
       <Avatar
