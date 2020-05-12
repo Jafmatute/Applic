@@ -19,10 +19,24 @@ export default function FormAddBuys(props) {
   const { dropDownAlert, setIsLoading, navigation } = props;
   const [imageSelected, setImageSelected] = useState([]);
   //console.log("navigation form..", navigation);
+
+  const [data, setDataForm] = useState({
+    title: "",
+    location: "",
+    description: "",
+  });
+
+  const hadleChange = (e, text) => {
+    setDataForm({
+      ...data,
+      [text]: e.nativeEvent.text,
+    });
+  };
+
   return (
     <ScrollView>
       <ImageBuys imageBuys={imageSelected[0]} />
-      <AddForm />
+      <AddForm hadleChange={hadleChange} />
       <UploadImagen
         imageSelected={imageSelected}
         setImageSelected={setImageSelected}
@@ -145,12 +159,15 @@ function UploadImagen(props) {
 }
 
 function AddForm(props) {
+  //console.log(props);
+  const { hadleChange } = props;
+  //console.log(title);
   return (
     <View style={stylesAddBuys.viewForm}>
       <Input
         placeholder="Nombre del articulo"
         containerStyle={stylesAddBuys.inputAddForm}
-        onChange={() => console.log("titulo")}
+        onChange={(text) => hadleChange(text, "title")}
       />
 
       <Input
@@ -162,14 +179,14 @@ function AddForm(props) {
           color: "#c2c2c2",
           onPress: () => console.log("Seleccione la ubicación"),
         }}
-        onChange={() => console.log("Dirección")}
+        onChange={(text) => hadleChange(text, "location")}
       />
 
       <Input
         placeholder="Descripción"
         multiline={true}
         containerStyle={stylesAddBuys.inputTextArea}
-        onChange={() => console.log("Descripción")}
+        onChange={(text) => hadleChange(text, "description")}
       />
     </View>
   );
