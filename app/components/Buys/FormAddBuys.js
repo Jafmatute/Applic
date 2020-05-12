@@ -22,6 +22,7 @@ export default function FormAddBuys(props) {
   return (
     <ScrollView>
       <ImageBuys imageBuys={imageSelected[0]} />
+      <AddForm />
       <UploadImagen
         imageSelected={imageSelected}
         setImageSelected={setImageSelected}
@@ -125,13 +126,13 @@ function UploadImagen(props) {
       {imageSelected.map((imageBuys, index) => (
         <View>
           <Avatar
-            //key={index}
-            //onPress={() => removeImage(imageBuys)}
+            key={index}
+            onPress={() => removeImage(imageBuys)}
             style={stylesAddBuys.miniatureStyle}
             source={{ uri: imageBuys }}
           />
           <Badge
-            key={index}
+            //key={index}
             status="error"
             containerStyle={stylesAddBuys.badgeAvatar}
             onPress={() => removeImage(imageBuys)}
@@ -139,6 +140,37 @@ function UploadImagen(props) {
           />
         </View>
       ))}
+    </View>
+  );
+}
+
+function AddForm(props) {
+  return (
+    <View style={stylesAddBuys.viewForm}>
+      <Input
+        placeholder="Nombre del articulo"
+        containerStyle={stylesAddBuys.inputAddForm}
+        onChange={() => console.log("titulo")}
+      />
+
+      <Input
+        placeholder="Dirección"
+        containerStyle={stylesAddBuys.inputAddForm}
+        rightIcon={{
+          type: "material-community",
+          name: "google-maps",
+          color: "#c2c2c2",
+          onPress: () => console.log("Seleccione la ubicación"),
+        }}
+        onChange={() => console.log("Dirección")}
+      />
+
+      <Input
+        placeholder="Descripción"
+        multiline={true}
+        containerStyle={stylesAddBuys.inputTextArea}
+        onChange={() => console.log("Descripción")}
+      />
     </View>
   );
 }
@@ -172,5 +204,18 @@ const stylesAddBuys = StyleSheet.create({
     position: "absolute",
     top: -3,
     right: 32,
+  },
+  viewForm: {
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  inputAddForm: {
+    marginBottom: 10,
+  },
+  inputTextArea: {
+    height: 100,
+    width: "100%",
+    padding: 0,
+    margin: 0,
   },
 });
