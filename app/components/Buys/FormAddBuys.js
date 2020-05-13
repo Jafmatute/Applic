@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ScrollView, Alert, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Alert,
+  Dimensions,
+} from "react-native";
 import {
   Icon,
   Avatar,
@@ -11,6 +18,8 @@ import {
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import imgbuy from "../../../assets/img/screen-buys.png";
+import MapView from "react-native-maps";
+import Modal from "../../components/Modal";
 
 const WidthScreen = Dimensions.get("window").width;
 
@@ -20,6 +29,11 @@ export default function FormAddBuys(props) {
   const [imageSelected, setImageSelected] = useState([]);
   //console.log("navigation form..", navigation);
 
+  //state Maps
+  const [isVisibleMap, setIsVisibleMap] = useState(false);
+  const [locationBuys, setLocationBuy] = useState(null);
+
+  //Formulario state
   const [data, setDataForm] = useState({
     title: "",
     location: "",
@@ -36,10 +50,20 @@ export default function FormAddBuys(props) {
   return (
     <ScrollView>
       <ImageBuys imageBuys={imageSelected[0]} />
-      <AddForm hadleChange={hadleChange} />
+      <AddForm
+        hadleChange={hadleChange}
+        setIsVisibleMap={setIsVisibleMap}
+        locationBuys={locationBuys}
+      />
       <UploadImagen
         imageSelected={imageSelected}
         setImageSelected={setImageSelected}
+        dropDownAlert={dropDownAlert}
+      />
+      <Map
+        isVisibleMap={isVisibleMap}
+        setIsVisibleMap={setIsVisibleMap}
+        setLocationBuy={setLocationBuy}
         dropDownAlert={dropDownAlert}
       />
     </ScrollView>
@@ -92,7 +116,7 @@ function UploadImagen(props) {
         dropDownAlert.current.alertWithType(
           "info",
           "Galeria",
-          "No seleccionó ninguna imagen de la galeria"
+          "Cancelada la selección"
         );
       } else {
         setImageSelected([...imageSelected, result.uri]);
@@ -131,8 +155,9 @@ function UploadImagen(props) {
         <Icon
           type="material-community"
           name="camera"
-          color="#7a7a7a"
-          containerStyle={stylesAddBuys.containerIcon}
+          color="#2089dc"
+          raised={true}
+          //containerStyle={stylesAddBuys.containerIcon}
           onPress={imageSelect}
         />
       )}
@@ -160,7 +185,7 @@ function UploadImagen(props) {
 
 function AddForm(props) {
   //console.log(props);
-  const { hadleChange } = props;
+  const { hadleChange, setIsVisibleMap, locationBuys } = props;
   //console.log(title);
   return (
     <View style={stylesAddBuys.viewForm}>
@@ -176,8 +201,8 @@ function AddForm(props) {
         rightIcon={{
           type: "material-community",
           name: "google-maps",
-          color: "#c2c2c2",
-          onPress: () => console.log("Seleccione la ubicación"),
+          color: locationBuys ? "#00a680" : "#c2c2c2",
+          onPress: () => setIsVisibleMap(true),
         }}
         onChange={(text) => hadleChange(text, "location")}
       />
@@ -192,6 +217,54 @@ function AddForm(props) {
   );
 }
 
+function Map(props) {
+  const {
+    isVisibleMap,
+    setIsVisibleMap,
+    setLocationBuy,
+    dropDownAlert,
+  } = props;
+
+  const [location, setLocation] = useState(null);
+
+  return (
+    <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
+      <View>
+        {location && (
+          <MapView
+            style={stylesAddBuys.map}
+            initialRegion={location}
+            showsUserLocation={true}
+            onRegionChange={(region) => setLocation(region)}
+          >
+            <MapView.Marker
+              coordinate={{
+                latitude: location.latitude,
+                logitude: location.logitude,
+              }}
+              draggable
+            />
+          </MapView>
+        )}
+        <View style={stylesAddBuys.viewMapBtn}>
+          <Button
+            title="Guardar"
+            onPress={() => console.log("ubicación guardada")}
+            containerStyle={stylesAddBuys.viewMapBtnContainerSave}
+            buttonStyle={stylesAddBuys.viewMapBtnSave}
+          />
+          <Button
+            title="Cancelar"
+            onPress={() => setIsVisibleMap(false)}
+            containerStyle={stylesAddBuys.viewMapBtnContainerCancel}
+            buttonStyle={stylesAddBuys.viewMapBtnCancel}
+          />
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 const stylesAddBuys = StyleSheet.create({
   viewPhoto: {
     alignItems: "center",
@@ -202,7 +275,7 @@ const stylesAddBuys = StyleSheet.create({
     flexDirection: "row",
     marginLeft: 20,
     marginRight: 20,
-    marginTop: 30,
+    marginTop: -40,
   },
   containerIcon: {
     alignItems: "center",
@@ -234,5 +307,26 @@ const stylesAddBuys = StyleSheet.create({
     width: "100%",
     padding: 0,
     margin: 0,
+  },
+  map: {
+    width: "100%",
+    height: 550,
+  },
+  viewMapBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  viewMapBtnContainerSave: {
+    paddingRight: 5,
+  },
+  viewMapBtnSave: {
+    backgroundColor: "#08a686",
+  },
+  viewMapBtnContainerCancel: {
+    paddingLeft: 5,
+  },
+  viewMapBtnCancel: {
+    backgroundColor: "#a60d0d",
   },
 });
