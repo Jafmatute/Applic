@@ -28,7 +28,7 @@ function AddBuysButton(props) {
     <ActionButton
       buttonColor="orange"
       onPress={() => navigation.navigate("Buys")}
-    ></ActionButton>
+    />
   );
 }
 

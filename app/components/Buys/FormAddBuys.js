@@ -17,6 +17,7 @@ import {
 } from "react-native-elements";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 import imgbuy from "../../../assets/img/screen-buys.png";
 import MapView from "react-native-maps";
 import Modal from "../../components/Modal";
@@ -163,9 +164,8 @@ function UploadImagen(props) {
       )}
 
       {imageSelected.map((imageBuys, index) => (
-        <View>
+        <View key={index}>
           <Avatar
-            key={index}
             onPress={() => removeImage(imageBuys)}
             style={stylesAddBuys.miniatureStyle}
             source={{ uri: imageBuys }}
@@ -226,6 +226,33 @@ function Map(props) {
   } = props;
 
   const [location, setLocation] = useState(null);
+  //console.log(location);
+
+  useEffect(() => {
+    (async () => {
+      const resultPermissions = await Permissions.askAsync(
+        Permissions.LOCATION
+      );
+      //console.log(resultPermissions );
+      const statusPermissions = resultPermissions.permissions.location.status;
+
+      if (statusPermissions !== "granted") {
+        dropDownAlert.current.alertWithType(
+          "info",
+          "Ubicación",
+          "Debé activarlos manualmente en ajustes(Configuración del dispostivo FINDIT.)"
+        );
+      } else {
+        const loc = await Location.getCurrentPositionAsync({});
+        setLocation({
+          latitude: loc.coords.latitude,
+          longitude: loc.coords.longitude,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
+        });
+      }
+    })();
+  }, []);
 
   return (
     <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
@@ -240,7 +267,7 @@ function Map(props) {
             <MapView.Marker
               coordinate={{
                 latitude: location.latitude,
-                logitude: location.logitude,
+                longitude: location.longitude,
               }}
               draggable
             />
