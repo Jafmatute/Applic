@@ -3,7 +3,6 @@ import * as firebase from "firebase";
 import Loading from "../../components/Loading";
 import UserGuest from "./UserGuest";
 import UserLogged from "./UserLogged";
-import { set } from "react-native-reanimated";
 
 export default function MyAccount({ navigation }) {
   const [login, setLogin] = useState(null);
@@ -33,5 +32,5 @@ export default function MyAccount({ navigation }) {
     return <Loading isVisible={true} text="Cargando.." />;
   }
 
-  return login ? <UserLogged /> : <UserGuest props={navigation} />;
+  return login ? <UserLogged /> : <UserGuest />;
 }

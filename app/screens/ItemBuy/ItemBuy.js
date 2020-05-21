@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import ActionButton from "react-native-action-button";
+import { Icon } from "react-native-elements";
 import * as firebase from "firebase";
 
 export default function ItemBuy({ navigation }) {
@@ -17,18 +17,17 @@ export default function ItemBuy({ navigation }) {
     <View style={stylesBuys.viewBody}>
       <Text>Productos del cliente</Text>
 
-      {user && <AddBuysButton navigation={navigation} />}
+      {user && (
+        <Icon
+          reverse
+          type="material-community"
+          name="plus"
+          color="orange"
+          containerStyle={stylesBuys.btnContainer}
+          onPress={() => navigation.navigate("Buys")}
+        />
+      )}
     </View>
-  );
-}
-
-function AddBuysButton(props) {
-  const { navigation } = props;
-  return (
-    <ActionButton
-      buttonColor="orange"
-      onPress={() => navigation.navigate("Buys")}
-    />
   );
 }
 
@@ -36,6 +35,13 @@ const stylesBuys = StyleSheet.create({
   viewBody: {
     flex: 1,
   },
-  buttom: {},
+  btnContainer: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    shadowColor: "black",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.5,
+  },
 });
 //export default ItemBuy();

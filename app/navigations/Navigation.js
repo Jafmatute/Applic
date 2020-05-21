@@ -13,20 +13,19 @@ const Tab = createBottomTabNavigator();
 const NavigationStacks = () => (
   <Tab.Navigator
     initialRouteName="ItemBuys"
-    screenOptions={{ gestureEnabled: false }}
+    tabBarOptions={{
+      inactiveTintColor: "#646464",
+      activeTintColor: "#00a680",
+    }}
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ color }) => screenOptions(route, color),
+    })}
   >
     <Tab.Screen
       name="ItemBuys"
       component={ItemBuyScreenStacks}
       options={{
-        tabBarIcon: ({ tintColor }) => (
-          <Icon
-            type="material-community"
-            name="compass-outline"
-            size={24}
-            color={tintColor}
-          />
-        ),
+        title: "Articulos",
       }}
     />
 
@@ -34,14 +33,7 @@ const NavigationStacks = () => (
       name="Search"
       component={SearchScreenStacks}
       options={{
-        tabBarIcon: ({ tintColor }) => (
-          <Icon
-            type="material-community"
-            name="magnify"
-            size={24}
-            color={tintColor}
-          />
-        ),
+        title: "Búsqueda",
       }}
     />
 
@@ -49,14 +41,7 @@ const NavigationStacks = () => (
       name="Account"
       component={MyAccountScreenStacks}
       options={{
-        tabBarIcon: ({ tintColor }) => (
-          <Icon
-            type="material-community"
-            name="account-details"
-            size={24}
-            color={tintColor}
-          />
-        ),
+        title: "Cuenta",
       }}
     />
 
@@ -64,18 +49,36 @@ const NavigationStacks = () => (
       name="Message"
       component={MessageScreenStacks}
       options={{
-        tabBarIcon: ({ tintColor }) => (
-          <Icon
-            type="material-community"
-            name="forum"
-            size={24}
-            color={tintColor}
-          />
-        ),
+        title: "Mensaje",
       }}
     />
   </Tab.Navigator>
 );
+
+function screenOptions(route, color) {
+  let iconName;
+
+  switch (route.name) {
+    case "ItemBuys":
+      iconName = "cart-outline";
+      break;
+    case "Search":
+      iconName = "magnify";
+      break;
+    case "Account":
+      iconName = "home-outline";
+      break;
+    case "Message":
+      iconName = "message-outline";
+      break;
+
+    default:
+      break;
+  }
+  return (
+    <Icon type="material-community" name={iconName} size={22} color={color} />
+  );
+}
 
 export default () => (
   <NavigationContainer>
