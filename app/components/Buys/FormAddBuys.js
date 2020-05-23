@@ -254,6 +254,18 @@ function Map(props) {
     })();
   }, []);
 
+  const confirmLocation = () => {
+    setLocationBuy(location);
+    dropDownAlert.current.alertWithType(
+      "success",
+      "Ubicación",
+      "Localización guardada)"
+    );
+
+    setIsVisibleMap(false);
+    //console.log("localización save", location);
+  };
+
   return (
     <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
       <View>
@@ -276,7 +288,7 @@ function Map(props) {
         <View style={stylesAddBuys.viewMapBtn}>
           <Button
             title="Guardar"
-            onPress={() => console.log("ubicación guardada")}
+            onPress={confirmLocation}
             containerStyle={stylesAddBuys.viewMapBtnContainerSave}
             buttonStyle={stylesAddBuys.viewMapBtnSave}
           />
