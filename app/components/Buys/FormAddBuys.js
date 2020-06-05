@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import * as firebase from "firebase";
 import {
   StyleSheet,
   Text,
@@ -6,6 +7,7 @@ import {
   ScrollView,
   Alert,
   Dimensions,
+  Modal,
 } from "react-native";
 import {
   Icon,
@@ -15,58 +17,36 @@ import {
   Input,
   Button,
 } from "react-native-elements";
-import * as Permissions from "expo-permissions";
-import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
+import Colors from "../../Customs/Colors";
+import { firebaseBuys, getPerfilVehicle } from "../../utils/FirebaseBuys";
 import imgbuy from "../../../assets/img/screen-buys.png";
-import MapView from "react-native-maps";
-import Modal from "../../components/Modal";
-
+import AddProfileVehicle from "./AddProfileVehicle";
 const WidthScreen = Dimensions.get("window").width;
 
 export default function FormAddBuys(props) {
-  //console.log("add form", props);
   const { dropDownAlert, setIsLoading, navigation } = props;
   const [imageSelected, setImageSelected] = useState([]);
-  //console.log("navigation form..", navigation);
+  const [lists, setLists] = useState([]);
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    firebaseBuys((error, user) => {
+      if (error) {
+        return alert("oh oh... somehing went wrong");
+      }
 
-  //state Maps
-  const [isVisibleMap, setIsVisibleMap] = useState(false);
-  const [locationBuys, setLocationBuy] = useState(null);
-
-  //Formulario state
-  const [data, setDataForm] = useState({
-    title: "",
-    location: "",
-    description: "",
-  });
-
-  const hadleChange = (e, text) => {
-    setDataForm({
-      ...data,
-      [text]: e.nativeEvent.text,
+      getPerfilVehicle((lists) => {
+        setLists(lists);
+      });
+      setUser(user);
     });
-  };
 
+    console.log("get profile ", lists);
+    //console.log("USER", user);
+  }, []);
   return (
     <ScrollView>
       <ImageBuys imageBuys={imageSelected[0]} />
-      <AddForm
-        hadleChange={hadleChange}
-        setIsVisibleMap={setIsVisibleMap}
-        locationBuys={locationBuys}
-      />
-      <UploadImagen
-        imageSelected={imageSelected}
-        setImageSelected={setImageSelected}
-        dropDownAlert={dropDownAlert}
-      />
-      <Map
-        isVisibleMap={isVisibleMap}
-        setIsVisibleMap={setIsVisibleMap}
-        setLocationBuy={setLocationBuy}
-        dropDownAlert={dropDownAlert}
-      />
+      <ListProfile lists={lists} />
     </ScrollView>
   );
 }
@@ -88,221 +68,97 @@ function ImageBuys(props) {
   );
 }
 
-function UploadImagen(props) {
-  const { imageSelected, setImageSelected, dropDownAlert } = props;
-
-  const imageSelect = async () => {
-    const resultPermissions = await Permissions.askAsync(
-      Permissions.CAMERA_ROLL
-    );
-
-    //console.log(resultPermissions);
-
-    const resultPermissionCamera =
-      resultPermissions.permissions.cameraRoll.status;
-
-    if (resultPermissionCamera === "denied") {
-      dropDownAlert.current.alertWithType(
-        "error",
-        "Galeria",
-        "Permisos denegados, para activarlos en el apartado de ajsutes los puedes activar nuevamente"
-      );
-    } else {
-      //console.log("correcto");
-      const result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        aspect: [4, 3],
-      });
-      if (result.cancelled) {
-        dropDownAlert.current.alertWithType(
-          "info",
-          "Galeria",
-          "Cancelada la selección"
-        );
-      } else {
-        setImageSelected([...imageSelected, result.uri]);
-      }
-    }
-  };
-
-  const removeImage = (image) => {
-    //console.log(image);
-    const arrayImage = imageSelected;
-    Alert.alert(
-      "Eliminar imagen",
-      "¿Está seguro de que quiere eliminar la imagen?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Eliminar",
-          onPress: () =>
-            setImageSelected(
-              arrayImage.filter((imageURL) => imageURL != image)
-            ),
-        },
-      ],
-      { cancelable: false }
-    );
-  };
-
-  //console.log(imageSelected);
+//agregar perfil del vehículo a firebase
+const addVehicleProfile = (list) => {
+  //console.log("New profile", list);
+};
+function ListProfile(props) {
+  const { lists } = props;
+  const [isVisibleModal, setIsVisibleModal] = useState(false);
+  const icon = "cart-plus";
+  console.log("lisProfile", lists);
 
   return (
-    <View style={stylesAddBuys.viewImage}>
-      {imageSelected.length < 5 && (
+    <View style={stylesAddBuys.container}>
+      <Modal
+        animationType="slide"
+        visible={isVisibleModal}
+        onRequestClose={() => setIsVisibleModal(false)}
+      >
+        <AddProfileVehicle
+          closeModal={() => setIsVisibleModal(false)}
+          addVehicleProfile={addVehicleProfile}
+        />
+      </Modal>
+      <View style={{ backgroundColor: Colors.themeColor }}></View>
+
+      <View style={stylesAddBuys.add}>
+        <Text style={{ fontSize: 24 }}>Añadir</Text>
         <Icon
           type="material-community"
-          name="camera"
-          color="#2089dc"
-          raised={true}
-          //containerStyle={stylesAddBuys.containerIcon}
-          onPress={imageSelect}
+          name="plus-circle-outline"
+          size={40}
+          style={stylesAddBuys.iconVehicle}
+          onPress={() => setIsVisibleModal(true)}
         />
-      )}
+      </View>
 
-      {imageSelected.map((imageBuys, index) => (
-        <View key={index}>
-          <Avatar
-            onPress={() => removeImage(imageBuys)}
-            style={stylesAddBuys.miniatureStyle}
-            source={{ uri: imageBuys }}
+      <ScrollView style={{ backgroundColor: Colors.backgroundApp }}>
+        {lists.map((task) => (
+          <ProfileVehicle
+            task={`${task.marca},${task.modelo}`}
+            icon={icon}
+            theme={task.tema}
+            stamp={`${task.tipo} - ${task.serie} - ${task.vin}`}
+            key={task.id}
           />
-          <Badge
-            //key={index}
-            status="error"
-            containerStyle={stylesAddBuys.badgeAvatar}
-            onPress={() => removeImage(imageBuys)}
-            value="X"
-          />
-        </View>
-      ))}
+        ))}
+      </ScrollView>
     </View>
   );
 }
 
-function AddForm(props) {
-  //console.log(props);
-  const { hadleChange, setIsVisibleMap, locationBuys } = props;
-  //console.log(title);
-  return (
-    <View style={stylesAddBuys.viewForm}>
-      <Input
-        placeholder="Nombre del articulo"
-        containerStyle={stylesAddBuys.inputAddForm}
-        onChange={(text) => hadleChange(text, "title")}
-      />
-
-      <Input
-        placeholder="Dirección"
-        containerStyle={stylesAddBuys.inputAddForm}
-        rightIcon={{
-          type: "material-community",
-          name: "google-maps",
-          color: locationBuys ? "#00a680" : "#c2c2c2",
-          onPress: () => setIsVisibleMap(true),
-        }}
-        onChange={(text) => hadleChange(text, "location")}
-      />
-
-      <Input
-        placeholder="Descripción"
-        multiline={true}
-        containerStyle={stylesAddBuys.inputTextArea}
-        onChange={(text) => hadleChange(text, "description")}
-      />
-    </View>
-  );
-}
-
-function Map(props) {
-  const {
-    isVisibleMap,
-    setIsVisibleMap,
-    setLocationBuy,
-    dropDownAlert,
-  } = props;
-
-  const [location, setLocation] = useState(null);
-  //console.log(location);
-
-  useEffect(() => {
-    (async () => {
-      const resultPermissions = await Permissions.askAsync(
-        Permissions.LOCATION
-      );
-      //console.log(resultPermissions );
-      const statusPermissions = resultPermissions.permissions.location.status;
-
-      if (statusPermissions !== "granted") {
-        dropDownAlert.current.alertWithType(
-          "info",
-          "Ubicación",
-          "Debé activarlos manualmente en ajustes(Configuración del dispostivo FINDIT.)"
-        );
-      } else {
-        const loc = await Location.getCurrentPositionAsync({});
-        setLocation({
-          latitude: loc.coords.latitude,
-          longitude: loc.coords.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
-        });
-      }
-    })();
-  }, []);
-
-  const confirmLocation = () => {
-    setLocationBuy(location);
-    dropDownAlert.current.alertWithType(
-      "success",
-      "Ubicación",
-      "Localización guardada)"
-    );
-
-    setIsVisibleMap(false);
-    //console.log("localización save", location);
-  };
-
-  return (
-    <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
+const ProfileVehicle = ({ task, icon, theme, stamp }) => {
+  if (task === null) {
+    return (
       <View>
-        {location && (
-          <MapView
-            style={stylesAddBuys.map}
-            initialRegion={location}
-            showsUserLocation={true}
-            onRegionChange={(region) => setLocation(region)}
-          >
-            <MapView.Marker
-              coordinate={{
-                latitude: location.latitude,
-                longitude: location.longitude,
-              }}
-              draggable
-            />
-          </MapView>
-        )}
-        <View style={stylesAddBuys.viewMapBtn}>
-          <Button
-            title="Guardar"
-            onPress={confirmLocation}
-            containerStyle={stylesAddBuys.viewMapBtnContainerSave}
-            buttonStyle={stylesAddBuys.viewMapBtnSave}
-          />
-          <Button
-            title="Cancelar"
-            onPress={() => setIsVisibleMap(false)}
-            containerStyle={stylesAddBuys.viewMapBtnContainerCancel}
-            buttonStyle={stylesAddBuys.viewMapBtnCancel}
-          />
+        <Text>No hay data</Text>
+      </View>
+    );
+  }
+  return (
+    <View style={[stylesAddBuys.profileVehicle]} key={task}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Icon
+          type="material-community"
+          name={icon}
+          size={30}
+          iconStyle={{ color: theme, marginRight: 5 }}
+        />
+
+        <View>
+          <Text style={{ fontSize: 16 }}>{task}</Text>
+          <Text style={{ color: Colors.greyish }}>{stamp}</Text>
         </View>
       </View>
-    </Modal>
+
+      <View style={{ flexDirection: "row" }}>
+        <Icon
+          type="material-community"
+          name="pencil"
+          size={25}
+          style={{ color: theme }}
+        />
+        <Icon
+          type="material-community"
+          name="trash-can"
+          size={25}
+          style={{ color: theme, marginLeft: 5 }}
+        />
+      </View>
+    </View>
   );
-}
+};
 
 const stylesAddBuys = StyleSheet.create({
   viewPhoto: {
@@ -310,62 +166,34 @@ const stylesAddBuys = StyleSheet.create({
     height: 200,
     marginBottom: 20,
   },
-  viewImage: {
-    flexDirection: "row",
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: -40,
+  container: {
+    flex: 1,
+    backgroundColor: Colors.themeColor,
   },
-  containerIcon: {
+  add: {
+    flexDirection: "row",
+    backgroundColor: Colors.backgroundApp,
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "center",
-    marginRight: 10,
-    height: 70,
-    width: 70,
-    backgroundColor: "#e3e3e3",
+    borderTopLeftRadius: 20,
+    paddingLeft: 20,
+    paddingRight: 40,
   },
-  miniatureStyle: {
-    width: 60,
-    height: 60,
-    marginRight: 10,
-  },
-  badgeAvatar: {
-    position: "absolute",
-    top: -3,
-    right: 32,
-  },
-  viewForm: {
-    marginLeft: 10,
-    marginRight: 10,
-  },
-  inputAddForm: {
-    marginBottom: 10,
-  },
-  inputTextArea: {
-    height: 100,
-    width: "100%",
-    padding: 0,
-    margin: 0,
-  },
-  map: {
-    width: "100%",
-    height: 550,
-  },
-  viewMapBtn: {
+  profileVehicle: {
+    backgroundColor: Colors.white,
     flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10,
+    marginHorizontal: 16,
+    marginVertical: 4,
+    borderRadius: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  viewMapBtnContainerSave: {
-    paddingRight: 5,
-  },
-  viewMapBtnSave: {
-    backgroundColor: "#08a686",
-  },
-  viewMapBtnContainerCancel: {
-    paddingLeft: 5,
-  },
-  viewMapBtnCancel: {
-    backgroundColor: "#a60d0d",
+  iconVehicle: {
+    color: Colors.themeColor,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    marginHorizontal: 20,
   },
 });

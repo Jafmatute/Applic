@@ -1,0 +1,15 @@
+export default Colors = {
+  black: "#2D3436",
+  gray: "#A4A4A4",
+  lightGray: "#CACACA",
+  blue: "#24A6D9",
+  red: "#D85963",
+  lightBlue: "#A7CBD9",
+  white: "#FFFFFF",
+  //themeColor: "#4263ec",
+  themeColor: "#24A6D9",
+  white2: "#fff",
+  backgroundApp: "#f4f6fc",
+  greyish: "#a4a4a4",
+  tint: "#2b49c3",
+};
