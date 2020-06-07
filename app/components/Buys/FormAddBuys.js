@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import * as firebase from "firebase";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   StyleSheet,
   Text,
@@ -8,6 +9,7 @@ import {
   Alert,
   Dimensions,
   Modal,
+  TouchableOpacity,
 } from "react-native";
 import {
   Icon,
@@ -18,7 +20,11 @@ import {
   Button,
 } from "react-native-elements";
 import Colors from "../../Customs/Colors";
-import { firebaseBuys, getPerfilVehicle } from "../../utils/FirebaseBuys";
+import {
+  firebaseBuys,
+  getPerfilVehicle,
+  addProfile,
+} from "../../utils/FirebaseBuys";
 import imgbuy from "../../../assets/img/screen-buys.png";
 import AddProfileVehicle from "./AddProfileVehicle";
 const WidthScreen = Dimensions.get("window").width;
@@ -28,25 +34,18 @@ export default function FormAddBuys(props) {
   const [imageSelected, setImageSelected] = useState([]);
   const [lists, setLists] = useState([]);
   const [user, setUser] = useState({});
-  useEffect(() => {
-    firebaseBuys((error, user) => {
-      if (error) {
-        return alert("oh oh... somehing went wrong");
-      }
 
+  useFocusEffect(
+    useCallback(() => {
       getPerfilVehicle((lists) => {
         setLists(lists);
       });
-      setUser(user);
-    });
-
-    console.log("get profile ", lists);
-    //console.log("USER", user);
-  }, []);
+    })
+  );
   return (
     <ScrollView>
       <ImageBuys imageBuys={imageSelected[0]} />
-      <ListProfile lists={lists} />
+      <ListProfile lists={lists} navigation={navigation} />
     </ScrollView>
   );
 }
@@ -71,12 +70,24 @@ function ImageBuys(props) {
 //agregar perfil del vehículo a firebase
 const addVehicleProfile = (list) => {
   //console.log("New profile", list);
+  const {
+    color,
+    dataForm: { marca, modelo, tipo, vin, serie },
+  } = list;
+  addProfile({
+    marca: marca,
+    modelo: modelo,
+    serie: serie,
+    tema: color,
+    tipo: tipo,
+    vin: vin,
+  });
 };
 function ListProfile(props) {
-  const { lists } = props;
+  const { lists, navigation } = props;
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const icon = "cart-plus";
-  console.log("lisProfile", lists);
+  //console.log("lisProfile- probando..", lists);
 
   return (
     <View style={stylesAddBuys.container}>
@@ -110,37 +121,44 @@ function ListProfile(props) {
             icon={icon}
             theme={task.tema}
             stamp={`${task.tipo} - ${task.serie} - ${task.vin}`}
+            navigation={navigation}
             key={task.id}
           />
         ))}
+        {lists.length === 0 && (
+          <View
+            style={{ flex: 2, justifyContent: "center", alignItems: "center" }}
+          >
+            <Text style={{ fontSize: 20 }}>No hay data</Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
 }
 
-const ProfileVehicle = ({ task, icon, theme, stamp }) => {
-  if (task === null) {
-    return (
-      <View>
-        <Text>No hay data</Text>
-      </View>
-    );
-  }
+const ProfileVehicle = ({ task, icon, theme, stamp, navigation }) => {
   return (
     <View style={[stylesAddBuys.profileVehicle]} key={task}>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Icon
-          type="material-community"
-          name={icon}
-          size={30}
-          iconStyle={{ color: theme, marginRight: 5 }}
-        />
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("Order", { data: [task, stamp, theme] })
+        }
+      >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Icon
+            type="material-community"
+            name={icon}
+            size={30}
+            iconStyle={{ color: theme, marginRight: 5 }}
+          />
 
-        <View>
-          <Text style={{ fontSize: 16 }}>{task}</Text>
-          <Text style={{ color: Colors.greyish }}>{stamp}</Text>
+          <View>
+            <Text style={{ fontSize: 16 }}>{task}</Text>
+            <Text style={{ color: Colors.greyish }}>{stamp}</Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
 
       <View style={{ flexDirection: "row" }}>
         <Icon

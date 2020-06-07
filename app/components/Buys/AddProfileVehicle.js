@@ -166,7 +166,7 @@ export default function AddProfileVehicle(props) {
                 onPress={onSubmit}
                 style={[stylesProfileVehicle.textSign, { color: "#fff" }]}
               >
-                Guardat perfil
+                Guardar Perfil
               </Text>
             </LinearGradient>
           </View>

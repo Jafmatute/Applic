@@ -9,15 +9,22 @@ export default function ItemBuy({ navigation }) {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((userInfo) => {
-      setUser(userInfo);
+      if (userInfo) {
+        console.log(userInfo.emailVerified);
+        if (userInfo.emailVerified === true) {
+          setUser(userInfo);
+        } else {
+          setUser(null);
+        }
+      }
     });
   }, []);
-
+  //console.log("Item buys....", user);
   return (
     <View style={stylesBuys.viewBody}>
       <Text>Productos del cliente</Text>
 
-      {user && (
+      {user ? (
         <Icon
           reverse
           type="material-community"
@@ -26,7 +33,7 @@ export default function ItemBuy({ navigation }) {
           containerStyle={stylesBuys.btnContainer}
           onPress={() => navigation.navigate("Buys")}
         />
-      )}
+      ) : null}
     </View>
   );
 }

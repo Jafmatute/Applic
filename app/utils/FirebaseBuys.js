@@ -16,18 +16,21 @@ export function firebaseBuys(callback) {
 }
 
 export function getPerfilVehicle(callback) {
-  //console.log("UID", userId());
   let ref = ref_();
 
-  const unsubscribe = ref.onSnapshot((snopShot) => {
+  ref.get().then((snopShot) => {
     list = [];
     snopShot.forEach((doc) => {
       list.push({ id: doc.id, ...doc.data() });
     });
 
     callback(list);
-    //console.log("list_", list);
   });
+}
+
+export function addProfile(list) {
+  let ref = ref_();
+  ref.add(list);
 }
 
 function ref_() {

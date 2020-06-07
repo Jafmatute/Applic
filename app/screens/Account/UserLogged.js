@@ -15,11 +15,15 @@ export default function UserLogged() {
     })();
   }, []);
 
+  const signOut = () => {
+    firebase.auth().signOut();
+  };
+
   return (
     <View>
       <InfoUserAccount infoUser={infoUser} />
 
-      <Button title="Cerrar sesión" onPress={() => firebase.auth().signOut()} />
+      <Button title="Cerrar sesión" onPress={signOut} />
     </View>
   );
 }
