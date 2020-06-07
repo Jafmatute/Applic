@@ -20,7 +20,7 @@ export default function Order(props) {
     <ScrollView>
       <ImageOrder theme={data[2]} img={img} />
       <UploadImg name={data[0]} img={img} setImg={setImg} theme={data[2]} />
-      <FormAddOrder color={data[2]} name={data[0]} />
+      <FormAddOrder color={data[2]} name={data[0]} img={img} />
     </ScrollView>
   );
 }
